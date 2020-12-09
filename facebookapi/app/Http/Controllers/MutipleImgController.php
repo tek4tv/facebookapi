@@ -52,7 +52,7 @@ class MutipleImgController extends Controller
         try {                     
             $pages = Http::get("https://graph.facebook.com/me?access_token=$access_token"); 
             $user_id =$pages['id'];
-           $response= Http::get("https://graph.facebook.com/$user_id/accounts?fields=name,access_token&access_token=$access_token&limit=1000"); 
+           $response= Http::get("https://graph.facebook.com/$user_id/accounts?fields=name,global_brand_page_name,access_token&access_token=$access_token&limit=1000"); 
         } catch(Facebook\Exception\ResponseException $e) {
           return 'Graph returned an error: ' . $e->getMessage();
           exit;
