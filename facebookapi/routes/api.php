@@ -43,5 +43,8 @@ Route::post('/getPosts',"MutipleImgController@GetPosts");
 
 Route::post('/uploadS3',"MutipleImgController@insertAction");
 
+Route::get('/likes',"MutipleImgController@LikesPost");
+
+Route::get('/shares',"MutipleImgController@SharePost");
 
 

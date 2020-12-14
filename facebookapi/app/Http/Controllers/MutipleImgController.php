@@ -14,7 +14,7 @@ class MutipleImgController extends Controller
 {      
     public function postMutiple(Request $request){
         $page_id = $request->input('PageId'); 
-        $user_token = $request->input('UserToken'); 
+        $user_token = $request->input('Token'); 
         $app_id = $request->input('AppId');  
         $app_secret = $request->input('AppSecret');  
         $content = $request->input('Message');       
@@ -48,7 +48,7 @@ class MutipleImgController extends Controller
         return $graphNode;        
     }  
     public function GetPages (Request $request){
-        $access_token =$request->input('UserToken');         
+        $access_token =$request->input('Token');         
         try {                     
             $pages = Http::get("https://graph.facebook.com/me?access_token=$access_token"); 
             $user_id =$pages['id'];
@@ -64,7 +64,7 @@ class MutipleImgController extends Controller
     } 
     public function GetComments (Request $request){
       $page_id = $request->input('PageId'); 
-      $user_token = $request->input('UserToken');
+      $user_token = $request->input('Token');
       $user_token_value =  Http::get("https://graph.facebook.com/$page_id?fields=access_token&access_token=$user_token"); 
       $access_token =$user_token_value["access_token"];
       $post_id = $request->input('PostId');           
@@ -82,15 +82,14 @@ class MutipleImgController extends Controller
     
     public function HidenCommnets (Request $request){
       $page_id = $request->input('PageId'); 
-      $user_token = $request->input('UserToken');
+      $user_token = $request->input('Token');
       $user_token_value =  Http::get("https://graph.facebook.com/$page_id?fields=access_token&access_token=$user_token"); 
       $access_token =$user_token_value["access_token"];
       $post_id = $request->input('PostId');   
        $comment_id = $request->input('CommentId');      
        $is_hidden =$request->input('Ishidden'); 
        try {                     
-        $getCommnets = Http::get("https://graph.facebook.com/$post_id/comments?access_token=$access_token");
-       
+        $getCommnets = Http::get("https://graph.facebook.com/$post_id/comments?access_token=$access_token");      
         foreach ($getCommnets["data"] as $key => $value) {
               $id =$value["id"];
               foreach ($comment_id as $key1 => $value1) {
@@ -113,7 +112,7 @@ class MutipleImgController extends Controller
       }
       public function GetTokenPage (Request $request){
         $page_id = $request->input('PageId'); 
-        $user_token = $request->input('UserToken'); 
+        $user_token = $request->input('Token'); 
         try {                     
           $token = Http::get("https://graph.facebook.com/$page_id?fields=access_token&access_token=$user_token");                              
           } catch(Facebook\Exception\ResponseException $e) {
@@ -127,7 +126,7 @@ class MutipleImgController extends Controller
       }
       public function GetPosts (Request $request){
         $page_id = $request->input('PageId'); 
-        $user_token = $request->input('UserToken');
+        $user_token = $request->input('Token');
         $user_token_value =  Http::get("https://graph.facebook.com/$page_id?fields=access_token&access_token=$user_token"); 
         $access_token =$user_token_value["access_token"];
          
@@ -145,7 +144,7 @@ class MutipleImgController extends Controller
 
       public function ReplyComments(Request $request){    
         $page_id = $request->input('PageId'); 
-        $user_token = $request->input('UserToken');
+        $user_token = $request->input('Token');
         $user_token_value =  Http::get("https://graph.facebook.com/$page_id?fields=access_token&access_token=$user_token"); 
         $access_token =$user_token_value["access_token"]; 
         $comment_id = $request->input('CommentId');  
@@ -165,7 +164,7 @@ class MutipleImgController extends Controller
 
       public function LikeComments(Request $request){
         $page_id = $request->input('PageId'); 
-        $user_token = $request->input('UserToken');
+        $user_token = $request->input('Token');
         $user_token_value =  Http::get("https://graph.facebook.com/$page_id?fields=access_token&access_token=$user_token"); 
         $access_token =$user_token_value["access_token"]; 
         $comment_id = $request->input('CommentId');       
@@ -183,7 +182,7 @@ class MutipleImgController extends Controller
       
       public function UnlikeComments(Request $request){
         $page_id = $request->input('PageId'); 
-        $user_token = $request->input('UserToken');
+        $user_token = $request->input('Token');
         $user_token_value =  Http::get("https://graph.facebook.com/$page_id?fields=access_token&access_token=$user_token"); 
         $access_token =$user_token_value["access_token"]; 
         $comment_id = $request->input('CommentId'); 
@@ -202,7 +201,7 @@ class MutipleImgController extends Controller
       
       public function EditComments(Request $request){
         $page_id = $request->input('PageId'); 
-        $user_token = $request->input('UserToken');
+        $user_token = $request->input('Token');
         $user_token_value =  Http::get("https://graph.facebook.com/$page_id?fields=access_token&access_token=$user_token"); 
         $access_token =$user_token_value["access_token"]; 
         $comment_id = $request->input('CommentId');         
@@ -221,7 +220,7 @@ class MutipleImgController extends Controller
 
       public function DeleteComments(Request $request){
         $page_id = $request->input('PageId'); 
-        $user_token = $request->input('UserToken');
+        $user_token = $request->input('Token');
         $user_token_value =  Http::get("https://graph.facebook.com/$page_id?fields=access_token&access_token=$user_token"); 
         $access_token =$user_token_value["access_token"]; 
         $comment_id = $request->input('CommentId'); 
@@ -237,7 +236,44 @@ class MutipleImgController extends Controller
           }   
           return $delete;
       }
-   
+
+      public function LikesPost(Request $request){
+        $page_id = $request->input('PageId'); 
+        $user_token = $request->input('Token');
+        $user_token_value =  Http::get("https://graph.facebook.com/$page_id?fields=access_token&access_token=$user_token"); 
+        $access_token =$user_token_value["access_token"]; 
+        $post_id = $request->input('PostId'); 
+         
+        try {                              
+          $get = Http::get("https://graph.facebook.com/$post_id/likes?access_token=$access_token");                           
+          } catch(Facebook\Exception\ResponseException $e) {
+            return 'Graph returned an error: ' . $e->getMessage();
+            exit;
+          } catch(Facebook\Exception\SDKException $e) {
+            return 'Facebook SDK returned an error: ' . $e->getMessage();
+            exit;
+          }   
+          return $get;
+      }
+
+      public function SharePost(Request $request){
+        $page_id = $request->input('PageId'); 
+        $user_token = $request->input('Token');
+        $user_token_value =  Http::get("https://graph.facebook.com/$page_id?fields=access_token&access_token=$user_token"); 
+        $access_token =$user_token_value["access_token"]; 
+        $post_id = $request->input('PostId'); 
+         
+        try {                              
+          $get = Http::get("https://graph.facebook.com/$post_id/sharedposts?access_token=$access_token");                           
+          } catch(Facebook\Exception\ResponseException $e) {
+            return 'Graph returned an error: ' . $e->getMessage();
+            exit;
+          } catch(Facebook\Exception\SDKException $e) {
+            return 'Facebook SDK returned an error: ' . $e->getMessage();
+            exit;
+          }   
+          return $get;
+      }       
 }
 
 
