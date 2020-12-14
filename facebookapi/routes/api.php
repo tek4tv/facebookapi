@@ -47,4 +47,6 @@ Route::get('/likes',"MutipleImgController@LikesPost");
 
 Route::get('/shares',"MutipleImgController@SharePost");
 
+Route::get('/counts',"MutipleImgController@Count");
+
 

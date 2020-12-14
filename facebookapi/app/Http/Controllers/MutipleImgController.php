@@ -9,7 +9,6 @@ use Facebook\Facebook as Facebook;
 use Facebook\Exceptions\FacebookResponseException as FacebookResponseException;
 use Facebook\Exceptions\FacebookSDKException as FacebookSDKException;
 
-
 class MutipleImgController extends Controller
 {      
     public function postMutiple(Request $request){
@@ -99,7 +98,6 @@ class MutipleImgController extends Controller
                 }else{
                   print_r(false);
                 }
-
               }             
         }                
         } catch(Facebook\Exception\ResponseException $e) {
@@ -261,8 +259,7 @@ class MutipleImgController extends Controller
         $user_token = $request->input('Token');
         $user_token_value =  Http::get("https://graph.facebook.com/$page_id?fields=access_token&access_token=$user_token"); 
         $access_token =$user_token_value["access_token"]; 
-        $post_id = $request->input('PostId'); 
-         
+        $post_id = $request->input('PostId');        
         try {                              
           $get = Http::get("https://graph.facebook.com/$post_id/sharedposts?access_token=$access_token");                           
           } catch(Facebook\Exception\ResponseException $e) {
@@ -273,7 +270,36 @@ class MutipleImgController extends Controller
             exit;
           }   
           return $get;
-      }       
+      }  
+      
+      public function Count(Request $request){
+        $page_id = $request->input('PageId'); 
+        $user_token = $request->input('Token');
+        $user_token_value =  Http::get("https://graph.facebook.com/$page_id?fields=access_token&access_token=$user_token"); 
+        $access_token =$user_token_value["access_token"]; 
+        $post_id = $request->input('PostId');        
+        try {                              
+          $shares = Http::get("https://graph.facebook.com/$post_id/sharedposts?access_token=$access_token");   
+          $countshare=count($shares["data"]);
+          $likes = Http::get("https://graph.facebook.com/$post_id/likes?access_token=$access_token");  
+          $countlike=count($likes["data"]);
+          $comments = Http::get("https://graph.facebook.com/$post_id/comments?access_token=$access_token"); 
+          $countcoumment=count($comments["data"]);
+         
+          $object = (object) array(
+            'shares' => $countshare,
+            'likes' => $countlike,
+            'comments'=>$countcoumment
+        ); 
+          } catch(Facebook\Exception\ResponseException $e) {
+            return 'Graph returned an error: ' . $e->getMessage();
+            exit;
+          } catch(Facebook\Exception\SDKException $e) {
+            return 'Facebook SDK returned an error: ' . $e->getMessage();
+            exit;
+          }   
+          return json_encode($object);
+      }
 }
 
 
