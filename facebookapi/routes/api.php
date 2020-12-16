@@ -21,6 +21,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('/mutiple',"MutipleImgController@postMutiple");
 
+Route::post('/video',"MutipleImgController@PostVideo");
+
+Route::post('/EditPostImage',"MutipleImgController@EditPostImage");
+
+Route::post('/EditPostVideo',"MutipleImgController@EditPostVideo");
+
 Route::post('/pages',"MutipleImgController@GetPages");
 
 Route::post('/getComments',"MutipleImgController@GetComments");
@@ -43,10 +49,10 @@ Route::post('/getPosts',"MutipleImgController@GetPosts");
 
 Route::post('/uploadS3',"MutipleImgController@insertAction");
 
-Route::get('/likes',"MutipleImgController@LikesPost");
+Route::post('/likes',"MutipleImgController@LikesPost");
 
-Route::get('/shares',"MutipleImgController@SharePost");
+Route::post('/shares',"MutipleImgController@SharePost");
 
-Route::get('/counts',"MutipleImgController@Count");
+Route::post('/counts',"MutipleImgController@Count");
 
 
