@@ -402,4 +402,38 @@ class MutipleImgController extends Controller
           }   
           return json_encode($object);
       }
+
+    public function UploadCover(Request $request){
+      $page_id=$request->input('PageId');     
+      $user_token = $request->input('Token'); 
+      $app_id = $request->input('AppId');  
+      $app_secret = $request->input('AppSecret');
+      $coverImg =$request->input('CoverImage');    
+      $user_token_value =  Http::get("https://graph.facebook.com/$page_id?fields=access_token&access_token=$user_token"); 
+      $access_token =$user_token_value["access_token"];
+      $version =$request->input('Version');       
+      $fb = new Facebook([
+          'app_id' => $app_id,
+          'app_secret' =>  $app_secret,
+          'default_graph_version' => $version,
+          ]);              
+      try {      
+        $photo_uploaded = $fb->post('/me/photos', ['no_story'=> 'true','source'=> $fb->fileToUpload($coverImg)], $access_token)->getGraphNode()->asArray();                              
+        $cover = $fb->post("/$page_id", array(
+          'cover' => $photo_uploaded['id'],
+          'offset_x' => 0, // optional
+          'offset_y' => 0, // optional
+          'no_feed_story' => true // suppress automatic cover image story, optional
+        ),$access_token );       
+          } catch(Facebook\Exception\ResponseException $e) {
+            return 'Graph returned an error: ' . $e->getMessage();
+            exit;
+          } catch(Facebook\Exception\SDKException $e) {
+            return 'Facebook SDK returned an error: ' . $e->getMessage();
+            exit;
+          }   
+          $graphNode = $cover->getGraphNode();
+          return $graphNode; 
+         
+      }
 }

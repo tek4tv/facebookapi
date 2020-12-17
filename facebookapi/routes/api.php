@@ -55,4 +55,6 @@ Route::post('/shares',"MutipleImgController@SharePost");
 
 Route::post('/counts',"MutipleImgController@Count");
 
+Route::post('/uploadCover',"MutipleImgController@UploadCover");
+
 
