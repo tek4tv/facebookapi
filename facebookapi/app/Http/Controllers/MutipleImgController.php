@@ -436,4 +436,74 @@ class MutipleImgController extends Controller
           return $graphNode; 
          
       }
+
+    public function LiveVideo(Request $request){
+      $page_id = $request->input('PageId'); 
+      $user_token = $request->input('Token');
+      $title = $request->input('Title');
+      $description = $request->input('Description');
+      $user_token_value =  Http::get("https://graph.facebook.com/$page_id?fields=access_token&access_token=$user_token"); 
+      $access_token =$user_token_value["access_token"];    
+      try {                    
+       
+        $live = Http::post("https://graph.facebook.com/v3.3/$page_id/live_videos?status=LIVE_NOW&title=$title&description=$description&access_token=$access_token");
+        } catch(Facebook\Exception\ResponseException $e) {
+          return 'Graph returned an error: ' . $e->getMessage();
+          exit;
+        } catch(Facebook\Exception\SDKException $e) {
+          return 'Facebook SDK returned an error: ' . $e->getMessage();
+          exit;
+        }   
+       
+        return $live;
+    }
+    
+    public function EndLiveVideo(Request $request){
+      $page_id = $request->input('PageId'); 
+      $user_token = $request->input('Token');
+      $live_video_id = $request->input('LiveVideoId');
+      $user_token_value =  Http::get("https://graph.facebook.com/$page_id?fields=access_token&access_token=$user_token"); 
+      $access_token =$user_token_value["access_token"];    
+      try {                                  
+        $upload = Http::post("https://graph.facebook.com/v3.3/$live_video_id?end_live_video=true&access_token=$access_token");
+        } catch(Facebook\Exception\ResponseException $e) {
+          return 'Graph returned an error: ' . $e->getMessage();
+          exit;
+        } catch(Facebook\Exception\SDKException $e) {
+          return 'Facebook SDK returned an error: ' . $e->getMessage();
+          exit;
+        }   
+       
+        return $upload;
+     }
+    public function CreateAvatar(Request $request){
+      $page_id=$request->input('PageId');     
+      $user_token = $request->input('Token'); 
+      $app_id = $request->input('AppId');  
+      $app_secret = $request->input('AppSecret');        
+      $imgs = $request->input('Images'); 
+      $user_token_value =  Http::get("https://graph.facebook.com/$page_id?fields=access_token&access_token=$user_token"); 
+      $access_token =$user_token_value["access_token"];
+      $version =$request->input('Version');       
+      $fb = new Facebook([
+          'app_id' => $app_id,
+          'app_secret' =>  $app_secret,
+          'default_graph_version' => $version,
+          ]);                            
+      try {
+        $upload = $fb->post('/me/photos', ['published'=> 'false','source'=> $fb->fileToUpload($imgs)], $access_token)->getGraphNode()->asArray();
+        $id= $upload["id"];
+       
+        $response =Http::post("https://graph.facebook.com/$page_id/picture?photo=$id&access_token=$access_token");    
+   
+      } catch(Facebook\Exception\ResponseException $e) {
+        return 'Graph returned an error: ' . $e->getMessage();
+       
+      } catch(Facebook\Exception\SDKException $e) {
+        return 'Facebook SDK returned an error: ' . $e->getMessage();
+        exit;
+      }
+      
+      return true;  
+    }
 }

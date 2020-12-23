@@ -57,4 +57,14 @@ Route::post('/counts',"MutipleImgController@Count");
 
 Route::post('/uploadCover',"MutipleImgController@UploadCover");
 
+Route::post('/liveVideo',"MutipleImgController@LiveVideo");
+
+Route::post('/endLiveVideo',"MutipleImgController@EndLiveVideo");
+
+Route::post('/createAvatar',"MutipleImgController@CreateAvatar");
+
+
+Route::post('/postWordpress',"WpController@PostWordpress");
+Route::get('/getCatagory',"WpController@GetCategory");
+
 
