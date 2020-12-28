@@ -54,6 +54,7 @@ class MutipleImgController extends Controller
         $title=$request->input('Title'); 
         $content = $request->input('Message');       
         $videos = $request->input('Videos');
+        $image = $request->input('Thumbnail');
         $user_token_value =  Http::get("https://graph.facebook.com/$page_id?fields=access_token&access_token=$user_token"); 
         $access_token =$user_token_value["access_token"];
         $version =$request->input('Version');       
@@ -66,7 +67,8 @@ class MutipleImgController extends Controller
         $videoData  = [          
           'title' => $title,
           'description' => $content,
-          'source' => $fb->videoToUpload($videos),        
+          'source' => $fb->videoToUpload($videos),   
+          'thumb' =>  $fb->fileToUpload($image)
         ];      
         try {         
             $response = $fb->post("/$page_id/videos",$videoData,$access_token);        
@@ -228,8 +230,7 @@ class MutipleImgController extends Controller
         $page_id = $request->input('PageId'); 
         $user_token = $request->input('Token');
         $user_token_value =  Http::get("https://graph.facebook.com/$page_id?fields=access_token&access_token=$user_token"); 
-        $access_token =$user_token_value["access_token"];
-         
+        $access_token =$user_token_value["access_token"];        
         try{
           $response = Http::get("https://graph.facebook.com/$page_id/posts?access_token=$access_token");                               
         }catch(Facebook\Exception\ResponseException $e){
@@ -407,10 +408,12 @@ class MutipleImgController extends Controller
       $page_id=$request->input('PageId');     
       $user_token = $request->input('Token'); 
       $app_id = $request->input('AppId');  
+      
       $app_secret = $request->input('AppSecret');
       $coverImg =$request->input('CoverImage');    
       $user_token_value =  Http::get("https://graph.facebook.com/$page_id?fields=access_token&access_token=$user_token"); 
       $access_token =$user_token_value["access_token"];
+      
       $version =$request->input('Version');       
       $fb = new Facebook([
           'app_id' => $app_id,
@@ -502,8 +505,8 @@ class MutipleImgController extends Controller
       } catch(Facebook\Exception\SDKException $e) {
         return 'Facebook SDK returned an error: ' . $e->getMessage();
         exit;
-      }
-      
+      }     
       return true;  
     }
+
 }
