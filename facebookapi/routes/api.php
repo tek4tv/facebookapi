@@ -21,6 +21,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 Route::post('/mutiple',"MutipleImgController@postMutiple");
 
+Route::post('/mutiple/publishTime',"MutipleImgController@ScheduledPublishTime");
+
 Route::post('/video',"MutipleImgController@PostVideo");
 
 Route::post('/EditPostImage',"MutipleImgController@EditPostImage");

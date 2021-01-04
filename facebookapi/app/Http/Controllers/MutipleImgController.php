@@ -18,7 +18,6 @@ class MutipleImgController extends Controller
         $app_secret = $request->input('AppSecret');  
         $content = $request->input('Message');       
         $imgs = $request->input('Images'); 
-        $scheduled_publish_time =$request->input('Time'); 
         $user_token_value =  Http::get("https://graph.facebook.com/$page_id?fields=access_token&access_token=$user_token"); 
         $access_token =$user_token_value["access_token"];
         $version =$request->input('Version');       
@@ -30,16 +29,12 @@ class MutipleImgController extends Controller
         try {
             $arrays=array();
             foreach ($imgs as $key => $value) {
-                $upload = $fb->post('/me/photos', ['published'=> 'false','temporary'=>'true','source'=> $fb->fileToUpload($value)], $access_token)->getGraphNode()->asArray();
+                $upload = $fb->post('/me/photos', ['published'=> 'false','source'=> $fb->fileToUpload($value)], $access_token)->getGraphNode()->asArray();
                 $img = $upload['id'];                  
                 $arrays["attached_media[$key]"] ='{"media_fbid": "'.$img.'"}' ;                
             }          
             $arrays["message"] =$content; 
-            $arrays["published"] ="false"; 
-           // date_default_timezone_set('Asia/Ho_Chi_Minh');
-            $arrays["scheduled_publish_time"] =strtotime($scheduled_publish_time);
-            $arrays["unpublished_content_type"] ="SCHEDULED";   
-            print_r($arrays);   
+            $arrays["formatting"] ='MARKDOWN';       
             $response = $fb->post("/$page_id/feed",$arrays,$access_token);        
         } catch(Facebook\Exception\ResponseException $e) {
           return 'Graph returned an error: ' . $e->getMessage();
@@ -51,6 +46,46 @@ class MutipleImgController extends Controller
         $graphNode = $response->getGraphNode();
         return $graphNode;        
     }  
+    public function ScheduledPublishTime(Request $request){
+      $page_id = $request->input('PageId'); 
+      $user_token = $request->input('Token'); 
+      $app_id = $request->input('AppId');  
+      $app_secret = $request->input('AppSecret');  
+      $content = $request->input('Message');       
+      $imgs = $request->input('Images'); 
+      $scheduled_publish_time =$request->input('Time'); 
+      $user_token_value =  Http::get("https://graph.facebook.com/$page_id?fields=access_token&access_token=$user_token"); 
+      $access_token =$user_token_value["access_token"];
+      $version =$request->input('Version');       
+      $fb = new Facebook([
+          'app_id' => $app_id,
+          'app_secret' =>  $app_secret,
+          'default_graph_version' => $version,
+          ]);                            
+      try {
+          $arrays=array();
+          foreach ($imgs as $key => $value) {
+              $upload = $fb->post('/me/photos', ['published'=> 'false','temporary'=>'true','source'=> $fb->fileToUpload($value)], $access_token)->getGraphNode()->asArray();
+              $img = $upload['id'];                  
+              $arrays["attached_media[$key]"] ='{"media_fbid": "'.$img.'"}' ;                
+          }          
+          $arrays["message"] =$content; 
+          $arrays["published"] ="false"; 
+          $datetime = date($scheduled_publish_time); 
+          $arrays["scheduled_publish_time"] =strtotime($datetime);
+          $arrays["unpublished_content_type"] ="SCHEDULED";   
+        //  print_r($arrays);   
+          $response = $fb->post("/$page_id/feed",$arrays,$access_token);        
+      } catch(Facebook\Exception\ResponseException $e) {
+        return 'Graph returned an error: ' . $e->getMessage();
+        return;
+      } catch(Facebook\Exception\SDKException $e) {
+        return 'Facebook SDK returned an error: ' . $e->getMessage();
+        exit;
+      }
+      $graphNode = $response->getGraphNode();
+      return $graphNode;        
+  }  
     public function PostVideo(Request $request){
         $page_id = $request->input('PageId'); 
         $user_token = $request->input('Token'); 
