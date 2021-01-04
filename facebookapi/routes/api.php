@@ -63,8 +63,8 @@ Route::post('/endLiveVideo',"MutipleImgController@EndLiveVideo");
 
 Route::post('/createAvatar',"MutipleImgController@CreateAvatar");
 
-
 Route::post('/postWordpress',"WpController@PostWordpress");
+
 Route::get('/getCatagory',"WpController@GetCategory");
 
 
