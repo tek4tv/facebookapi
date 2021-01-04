@@ -70,11 +70,9 @@ class MutipleImgController extends Controller
               $arrays["attached_media[$key]"] ='{"media_fbid": "'.$img.'"}' ;                
           }          
           $arrays["message"] =$content; 
-          $arrays["published"] ="false"; 
-          $datetime = date($scheduled_publish_time); 
-          $arrays["scheduled_publish_time"] =strtotime($datetime);
-          $arrays["unpublished_content_type"] ="SCHEDULED";   
-        //  print_r($arrays);   
+          $arrays["published"] ="false";       
+          $arrays["scheduled_publish_time"] =strtotime($scheduled_publish_time);
+          $arrays["unpublished_content_type"] ="SCHEDULED";    
           $response = $fb->post("/$page_id/feed",$arrays,$access_token);        
       } catch(Facebook\Exception\ResponseException $e) {
         return 'Graph returned an error: ' . $e->getMessage();
