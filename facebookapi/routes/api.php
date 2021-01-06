@@ -18,7 +18,7 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-
+// facebook
 Route::post('/mutiple',"MutipleImgController@postMutiple");
 
 Route::post('/mutiple/publishPosts',"MutipleImgController@ScheduledPublishTime");
@@ -70,5 +70,8 @@ Route::post('/createAvatar',"MutipleImgController@CreateAvatar");
 Route::post('/postWordpress',"WpController@PostWordpress");
 
 Route::get('/getCatagory',"WpController@GetCategory");
+
+
+
 
 

@@ -76,7 +76,7 @@ class MutipleImgController extends Controller
          $arrays["scheduled_publish_time"] =strtotime($datetime);
         //  $arrays["scheduled_publish_time"] =strtotime("+6 minutes");
           $arrays["unpublished_content_type"] ="SCHEDULED";    
-          print_r($arrays);
+        //  print_r($arrays);
          $response = $fb->post("/$page_id/feed",$arrays,$access_token);        
       } catch(Facebook\Exception\ResponseException $e) {
         return 'Graph returned an error: ' . $e->getMessage();
@@ -105,13 +105,21 @@ class MutipleImgController extends Controller
             'app_secret' =>  $app_secret,
             'default_graph_version' => $version,
             ]);
-       
-        $videoData  = [          
-          'title' => $title,
-          'description' => $content,
-          'source' => $fb->videoToUpload($videos),   
-          'thumb' =>  $fb->fileToUpload($image)
-        ];      
+        if (empty($image)) {
+          $videoData  = [          
+            'title' => $title,
+            'description' => $content,
+            'source' => $fb->videoToUpload($videos)          
+          ];
+            }else{
+              $videoData  = [          
+                'title' => $title,
+                'description' => $content,
+                'source' => $fb->videoToUpload($videos),   
+                'thumb' =>  $fb->fileToUpload($image)
+              ];
+            }
+              
         try {         
             $response = $fb->post("/$page_id/videos",$videoData,$access_token);        
         } catch(Facebook\Exception\ResponseException $e) {
@@ -144,15 +152,28 @@ class MutipleImgController extends Controller
           ]);
       date_default_timezone_set('Asia/Ho_Chi_Minh');
       $datetime = date($scheduled_publish_time);
-      $videoData  = [          
-        'title' => $title,
-        'description' => $content,
-        'source' => $fb->videoToUpload($videos),   
-        'thumb' =>  $fb->fileToUpload($image),
-        'scheduled_publish_time' => strtotime($datetime),
-        'published' => 'false'
-      ];  
-      print_r($videoData) ;   
+      if (empty($image)) {
+        $videoData  = [          
+          'title' => $title,
+          'description' => $content,
+          'source' => $fb->videoToUpload($videos),   
+         // 'thumb' =>  $fb->fileToUpload($image),
+          'scheduled_publish_time' => strtotime($datetime),
+          'published' => 'false'
+        ];  
+          }else{
+            $videoData  = [          
+              'title' => $title,
+              'description' => $content,
+              'source' => $fb->videoToUpload($videos),   
+              'thumb' =>  $fb->fileToUpload($image),
+              'scheduled_publish_time' => strtotime($datetime),
+              'published' => 'false'
+            ];  
+          }
+            
+     
+     // print_r($videoData) ;   
       try {         
           $response = $fb->post("/$page_id/videos",$videoData,$access_token);        
       } catch(Facebook\Exception\ResponseException $e) {
